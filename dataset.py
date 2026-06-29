@@ -23,6 +23,11 @@ POSITIVE_WORDS = [
     "chill",
     "relaxed",
     "amazing",
+    "proud",
+    "hopeful",
+    "surprised",
+    "shook",
+    "fire",
 ]
 
 NEGATIVE_WORDS = [
@@ -36,6 +41,8 @@ NEGATIVE_WORDS = [
     "stressed",
     "hate",
     "boring",
+    "annoying",
+    "ghosted",
 ]
 
 # ---------------------------------------------------------------------
@@ -50,6 +57,20 @@ SAMPLE_POSTS = [
     "This is fine",
     "So excited for the weekend",
     "I am not happy about this",
+    "Lowkey stressed but also proud of how far I came",
+    "No cap, this week has been straight fire 😊",
+    "I hate that I'm laughing at this sad meme 😂",
+    "Honestly, feeling meh about everything rn",
+    "Got ghosted again, so annoying 💀",
+    "My friends surprised me and I'm shook",
+    "Sometimes it's fine, sometimes it's not",
+    "I absolutely love getting stuck in traffic",
+    "This is actually pretty great :)",
+    "I'm so tired of this nonsense",
+    "Honestly, I'm feeling okay today",
+    "This weekend was amazing and relaxing",
+    "I really don't like being ignored",
+    "The day started badly but ended well",
 ]
 
 # Human labels for each post above.
@@ -65,7 +86,25 @@ TRUE_LABELS = [
     "neutral",   # "This is fine"
     "positive",  # "So excited for the weekend"
     "negative",  # "I am not happy about this"
+    "mixed",     # "Lowkey stressed but also proud of how far I came"
+    "positive",  # "No cap, this week has been straight fire 😊"
+    "mixed",     # "I hate that I'm laughing at this sad meme 😂"
+    "neutral",   # "Honestly, feeling meh about everything rn"
+    "negative",  # "Got ghosted again, so annoying 💀"
+    "positive",  # "My friends surprised me and I'm shook"
+    "mixed",     # "Sometimes it's fine, sometimes it's not"
+    "negative",  # "I absolutely love getting stuck in traffic"
+    "positive",  # "This is actually pretty great :)"
+    "negative",  # "I'm so tired of this nonsense"
+    "neutral",   # "Honestly, I'm feeling okay today"
+    "positive",  # "This weekend was amazing and relaxing"
+    "negative",  # "I really don't like being ignored"
+    "mixed",     # "The day started badly but ended well"
 ]
+
+assert len(SAMPLE_POSTS) == len(TRUE_LABELS), (
+    "SAMPLE_POSTS and TRUE_LABELS must have the same length"
+)
 
 # TODO: Add 5-10 more posts and labels.
 #

@@ -7,6 +7,12 @@ from typing import List
 from mood_analyzer import MoodAnalyzer
 from dataset import SAMPLE_POSTS, TRUE_LABELS
 
+from mood_analyzer import MoodAnalyzer
+
+analyzer = MoodAnalyzer()
+tokens = analyzer.preprocess("sooo happy!!")
+print(tokens)
+
 
 def evaluate_rule_based(posts: List[str], labels: List[str]) -> float:
     """

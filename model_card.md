@@ -13,13 +13,19 @@ You may complete this model card for whichever version you used, or compare both
 Describe whether you used the rule based model, the ML model, or both.  
 Example: “I used the rule based model only” or “I compared both models.”
 
+I used both the models. I used the rule based model in the beginning and then used the ML model to compare the predictions with these models. 
+
 **Intended purpose:**  
 What is this model trying to do?  
 Example: classify short text messages as moods like positive, negative, neutral, or mixed.
 
+The model is trying to read text and look for key words like happy, sad, etc to identify the mood for each sentence.
+
 **How it works (brief):**  
 For the rule based version, describe the scoring rules you created.  
 For the ML version, describe how training works at a high level (no math needed).
+
+For the rule based version, if the word is in positive_words, the score is +1. Otherwise if it's in negative_words the score is -1. If the word is neutral or mixed, the score remains at 0. For the ML version it takes sample sentences from dataset.py and then converts the sentences into single word representations. This then pairs each sentence with the correct label given in TRUE_LABELS. The model learns these patterns during training such as which words are associated with positive, negative, neutral and mixed moods leading to increase of accuracy in predicting the right label.
 
 
 
@@ -28,9 +34,13 @@ For the ML version, describe how training works at a high level (no math needed)
 **Dataset description:**  
 Summarize how many posts are in `SAMPLE_POSTS` and how you added new ones.
 
+There are 20 sample posts and I added new ones by asking the AI assistant to make new posts based on the different edge cases to see if the model really did do well.
+
 **Labeling process:**  
 Explain how you chose labels for your new examples.  
 Mention any posts that were hard to label or could have multiple valid labels.
+
+I chose labels based on the key words in the sentences like happy would be a positive label. The posts that had words like not happy and sarcasm like "I absolutely love getting stuck in traffic" were definitely hard for the model to figure out.
 
 **Important characteristics of your dataset:**  
 Examples you might include:  
@@ -40,8 +50,12 @@ Examples you might include:
 - Some posts express mixed feelings  
 - Contains short or ambiguous messages
 
+Dataset had sarcasm sentences and sentences that had mixed emotions. Some sentences were straightforward and easy to understand.
+
 **Possible issues with the dataset:**  
 Think about imbalance, ambiguity, or missing kinds of language.
+
+
 
 ## 3. How the Rule Based Model Works (if used)
 

@@ -10,6 +10,7 @@ This class starts with very simple logic:
 """
 
 from typing import List, Dict, Tuple, Optional
+import re
 
 from dataset import POSITIVE_WORDS, NEGATIVE_WORDS
 
@@ -52,9 +53,29 @@ class MoodAnalyzer:
           - Handle simple emojis separately (":)", ":-(", "🥲", "😂")
           - Normalize repeated characters ("soooo" -> "soo")
         """
-        cleaned = text.strip().lower()
+        # Normalize whitespace (collapse multiple spaces/newlines to single space)
+        cleaned = re.sub(r'\s+', ' ', text).strip().lower()
+        
+        # Extract emoticons and emojis before removing punctuation
+        emoticon_emoji_pattern = r':\)|:\(|:-\)|:-\(|:D|:P|;\)|:\/|[😀-🙏🌀-🗿]'
+        special_tokens = re.findall(emoticon_emoji_pattern, cleaned)
+        
+        # Remove emoticons and emojis from text temporarily
+        cleaned = re.sub(emoticon_emoji_pattern, '', cleaned)
+        
+        # Remove punctuation (but keep apostrophes for contractions like "don't")
+        cleaned = re.sub(r"[^\w\s']", '', cleaned)
+        
+        # Normalize repeated characters (keep up to 2 consecutive)
+        # e.g., "soooo" -> "soo", "hellooo" -> "helloo"
+        cleaned = re.sub(r'(.)\1{2,}', r'\1\1', cleaned)
+        
+        # Split into word tokens
         tokens = cleaned.split()
-
+        
+        # Add emoticons/emojis as separate tokens
+        tokens.extend(special_tokens)
+        
         return tokens
 
     # ---------------------------------------------------------------------
@@ -83,7 +104,38 @@ class MoodAnalyzer:
         #
         # Hint: if you implement negation, you may want to look at pairs of tokens,
         # like ("not", "happy") or ("never", "fun").
-        pass
+        tokens = self.preprocess(text)
+        
+        negation_words = {"not", "never", "no", "don't", "dont", "can't", "cant"}
+        score = 0
+        
+        i = 0
+        while i < len(tokens):
+            token = tokens[i]
+            
+            # Check if this token is a negation word
+            if token in negation_words and i + 1 < len(tokens):
+                # Look at the next token
+                next_token = tokens[i + 1]
+                if next_token in self.positive_words:
+                    # "not happy" -> negative
+                    score -= 1
+                    i += 2
+                elif next_token in self.negative_words:
+                    # "not bad" -> positive
+                    score += 1
+                    i += 2
+                else:
+                    i += 1
+            else:
+                # Regular scoring without negation
+                if token in self.positive_words:
+                    score += 1
+                elif token in self.negative_words:
+                    score -= 1
+                i += 1
+        
+        return score
 
     # ---------------------------------------------------------------------
     # Label prediction
@@ -110,7 +162,23 @@ class MoodAnalyzer:
         #   2. Return "positive" if the score is above 0.
         #   3. Return "negative" if the score is below 0.
         #   4. Return "neutral" otherwise.
-        pass
+        tokens = self.preprocess(text)
+        
+        # Check if text has both positive and negative words
+        has_positive = any(token in self.positive_words for token in tokens)
+        has_negative = any(token in self.negative_words for token in tokens)
+        
+        if has_positive and has_negative:
+            return "mixed"
+        
+        score = self.score_text(text)
+
+        if score > 0:
+            return "positive"
+        if score < 0:
+            return "negative"
+
+        return "neutral"
 
     # ---------------------------------------------------------------------
     # Explanations (optional but recommended)
