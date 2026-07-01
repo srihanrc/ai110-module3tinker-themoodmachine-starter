@@ -55,7 +55,7 @@ Dataset had sarcasm sentences and sentences that had mixed emotions. Some senten
 **Possible issues with the dataset:**  
 Think about imbalance, ambiguity, or missing kinds of language.
 
-
+The dataset had sentences that were difficult to determine whether the mood was mixed or neutral. At first the ML model never predicted the mood as mixed because it hadn't learned those patterns yet till after adding mixed mood into ML training.
 
 ## 3. How the Rule Based Model Works (if used)
 
@@ -69,12 +69,18 @@ Examples:
 - Emoji handling  
 - Threshold decisions for labels
 
+Positive words were +1 to score and negative words were -1 to score. For negation I made a list of negation words and then if the negation word is in the sentence it would look at the next word and best on the mood for that word the model would label the opposite choice.
+
 **Strengths of this approach:**  
 Where does it behave predictably or reasonably well?
+
+It's able to understand positive and negative words.
 
 **Weaknesses of this approach:**  
 Where does it fail?  
 Examples: sarcasm, subtlety, mixed moods, unfamiliar slang.
+
+It fails when there's a negation, this misses the negation word and therefore gives the wrong label.
 
 ## 4. How the ML Model Works (if used)
 
@@ -82,15 +88,23 @@ Examples: sarcasm, subtlety, mixed moods, unfamiliar slang.
 Describe the representation.  
 Example: “Bag of words using CountVectorizer.”
 
+The mood machine uses the list and splits the sentence into tokens. After the text is preprocessed, the program checks each word with the set of positive and negative words. If the word is positive the mood score increases by 1 and if negative the mood score decreases by 1.
+
 **Training data:**  
 State that the model trained on `SAMPLE_POSTS` and `TRUE_LABELS`.
+
+`SAMPLE_POSTS` was used as input text sentence examples while `TRUE_LABELS` was used as correct mood labels. 
 
 **Training behavior:**  
 Did you observe changes in accuracy when you added more examples or changed labels?
 
+Yes I noticed the accuracy was really low when I added more labels that were mixed. 
+
 **Strengths and weaknesses:**  
 Strengths might include learning patterns automatically.  
 Weaknesses might include overfitting to the training data or picking up spurious cues.
+
+One strength from the model is that this can learn patterns from training data instead of just lists of positive and negative words. This training data helps the model predict the mood labels.
 
 ## 5. Evaluation
 
@@ -98,12 +112,24 @@ Weaknesses might include overfitting to the training data or picking up spurious
 Both versions can be evaluated on the labeled posts in `dataset.py`.  
 Describe what accuracy you observed.
 
+I evaluated the model through accuracy which is total true_labels divided by the correct predictions to get the percentage accuracy of the model.
+
 **Examples of correct predictions:**  
 Provide 2 or 3 examples and explain why they were correct.
+
+"positive",  # "This is actually pretty great :)". This is correct because this sentence uses a smily face and uses the keyword great.
+
+"negative",  # "I'm so tired of this nonsense". This is correct because this uses the keyword tired and nonsense indicating the users frustration.
+
+"neutral",   # "Honestly, I'm feeling okay today". This is correct because this is uses the keyword okay indicating that the user is in between of feeling great and bad.
 
 **Examples of incorrect predictions:**  
 Provide 2 or 3 examples and explain why the model made a mistake.  
 If you used both models, show how their failures differed.
+
+"mixed",     # "Sometimes it's fine, sometimes it's not". The model made this mistake because it didn't mixed was a label as this wasn't apart of the model training and therefore the model predicted neutral instead.
+
+"negative",  # "I absolutely love getting stuck in traffic". The model made this mistake because it didn't understand negations and therefore heavily relied on the keyword to make it's prediction.
 
 ## 6. Limitations
 
@@ -115,6 +141,8 @@ Examples:
 - It cannot detect sarcasm reliably  
 - It depends heavily on the words you chose or labeled
 
+I think the dataset is a bit small but it definitely uses a lot of test case scenarios to where I am confident that the model is performing really well. I think one limitation would be that the model probably can't fully detect negation words just yet.
+
 ## 7. Ethical Considerations
 
 Discuss any potential impacts of using mood detection in real applications.  
@@ -123,6 +151,8 @@ Examples:
 - Misclassifying a message expressing distress  
 - Misinterpreting mood for certain language communities  
 - Privacy considerations if analyzing personal messages
+
+Using mood detection may cause misclassification in how the person actually feels. For example someone whose really upset may use a lot of sarcasm in their sentences and the model may fail to detect the sarcasm in each sentence. This would be really impactful in work environments as coworkers would get the wrong idea of how you feel. 
 
 ## 8. Ideas for Improvement
 
@@ -135,3 +165,5 @@ Possible directions:
 - Use a small neural network or transformer model  
 - Improve the rule based scoring method  
 - Add a real test set instead of training accuracy only
+
+For the models I would add more labeled training data so that this would learn from more different types of posts. That way the model would perform better on the new data instead of just a small example. I also think using a better model like neural networks would work as well since this would be able to understand the meaning of text for the sentences.  
